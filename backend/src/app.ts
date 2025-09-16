@@ -1,4 +1,6 @@
 import express from 'express';
+import housingRoutes from './routes/housing';
+import travelRoutes from './routes/travel';
 
 export function createApp() {
   const app = express();
@@ -18,6 +20,9 @@ export function createApp() {
     }
     res.status(201).json({ echoed: message });
   });
+
+  app.use('/api/v1/housing', housingRoutes);
+  app.use('/api/v1/travel', travelRoutes);
 
   return app;
 }
