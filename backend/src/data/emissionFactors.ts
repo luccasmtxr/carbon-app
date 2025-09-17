@@ -38,3 +38,13 @@ export const productsEmissionFactors = {
   recreational: 0.7,  // kg CO2e per $
   other: 0.3          // kg CO2e per $
 };
+
+export const servicesEmissionFactors = {
+  health: 0.4,          // kg CO2e per $
+  finance: 0.3,         // kg CO2e per $
+  recreation: 0.6,      // kg CO2e per $
+  education: 0.2,       // kg CO2e per $
+  vehicle: 0.5,         // kg CO2e per $
+  communications: 0.25, // kg CO2e per $
+  other: 0.3            // kg CO2e per $
+};

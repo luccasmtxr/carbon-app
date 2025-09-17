@@ -3,6 +3,7 @@ import housingRoutes from './routes/housing';
 import travelRoutes from './routes/travel';
 import foodRoutes from './routes/food';
 import productsRoutes from './routes/products';
+import servicesRoutes from './routes/services';
 
 export function createApp() {
   const app = express();
@@ -27,6 +28,7 @@ export function createApp() {
   app.use('/api/v1/travel', travelRoutes);
   app.use('/api/v1/food', foodRoutes);
   app.use('/api/v1/products', productsRoutes);
+  app.use('/api/v1/services', servicesRoutes);
 
   return app;
 }
