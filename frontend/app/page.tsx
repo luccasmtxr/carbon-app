@@ -31,18 +31,19 @@ import {
   Utensils,
   Package,
   Cog,
-  UserCog
+  UserCog,
+  BarChart3,
 } from "lucide-react";
 
 const STEPS = ["Housing", "Travel", "Food", "Products", "Services"] as const;
 type Step = (typeof STEPS)[number];
 
 export const categoryColors: Record<string, string> = {
-  housing: "#3b82f6",   // blue
-  travel: "#22c55e",    // green
-  food: "#ef4444",      // red
-  products: "#f59e0b",  // amber
-  services: "#8b5cf6",  // violet
+  housing: "#3b82f6", // blue
+  travel: "#22c55e", // green
+  food: "#ef4444", // red
+  products: "#f59e0b", // amber
+  services: "#8b5cf6", // violet
 };
 
 const initialActionState: FootprintActionState = { result: null };
@@ -88,7 +89,9 @@ export default function HomePage() {
     });
   }, [watched, householdSize]);
 
-  const [serverState, setServerState] = useState<FootprintActionState>({ result: null });
+  const [serverState, setServerState] = useState<FootprintActionState>({
+    result: null,
+  });
   const [isPending, startTransition] = useTransition();
 
   // auto-calc after changes
@@ -128,7 +131,7 @@ export default function HomePage() {
                 {STEPS.map((s) => {
                   const Icon = iconForStep(s);
                   const isActive = step === s;
-                  const color = categoryColors[s.toLowerCase()]; // pick from chart colors
+                  const color = categoryColors[s.toLowerCase()];
 
                   return (
                     <li key={s} className="flex items-center gap-2 flex-shrink-0">
@@ -136,10 +139,10 @@ export default function HomePage() {
                         type="button"
                         onClick={() => goTo(s)}
                         className={`
-              flex flex-col items-center gap-2 rounded-lg px-4 py-3 shadow-sm transition
-              ${isActive ? "text-white" : "text-foreground/70"}
-              hover:-translate-y-1 hover:shadow-md
-            `}
+                          flex flex-col items-center gap-2 rounded-lg px-4 py-3 shadow-sm transition cursor-pointer
+                          ${isActive ? "text-white" : "text-foreground/70"}
+                          hover:-translate-y-1 hover:shadow-md
+                        `}
                         style={{
                           backgroundColor: isActive ? color : "var(--muted)",
                         }}
@@ -156,7 +159,9 @@ export default function HomePage() {
                         </div>
                         <span className="text-sm font-semibold">{s}</span>
                       </button>
-                      {s !== STEPS[STEPS.length - 1] && <Separator className="flex-1" />}
+                      {s !== STEPS[STEPS.length - 1] && (
+                        <Separator className="flex-1" />
+                      )}
                     </li>
                   );
                 })}
@@ -182,13 +187,17 @@ export default function HomePage() {
                   <h2 className="text-lg font-semibold">Settings</h2>
                 </div>
                 <div className="grid gap-1.5 max-w-xs">
-                  <Label htmlFor="household">Number of persons in household</Label>
+                  <Label htmlFor="household">
+                    Number of persons in household
+                  </Label>
                   <Input
                     id="household"
                     type="number"
                     min={1}
                     value={householdSize}
-                    onChange={(e) => setHouseholdSize(Number(e.target.value) || 1)}
+                    onChange={(e) =>
+                      setHouseholdSize(Number(e.target.value) || 1)
+                    }
                   />
                 </div>
               </CardContent>
@@ -196,15 +205,17 @@ export default function HomePage() {
           </div>
 
           {/* Right column: Results */}
-          <Card className="w-full h-fit md:sticky md:top-6">
-            <CardContent className="p-6">
-              <SectionResults
-                serverState={serverState}
-                pending={isPending}
-                householdSize={householdSize}
-              />
-            </CardContent>
-          </Card>
+          <div className="w-full">
+            <Card className="w-full h-fit md:sticky md:top-6">
+              <CardContent className="p-6">
+                <SectionResults
+                  serverState={serverState}
+                  pending={isPending}
+                  householdSize={householdSize}
+                />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </main>
@@ -241,7 +252,10 @@ function Field({
   registerPath: any;
   form: UseFormReturn<FootprintForm>;
 }) {
-  const { register, formState: { errors } } = form;
+  const {
+    register,
+    formState: { errors },
+  } = form;
   const [root, key] = (registerPath as string).split(".");
   const err = (errors as any)?.[root]?.[key];
 
@@ -255,7 +269,11 @@ function Field({
         placeholder={placeholder}
         {...register(registerPath as any, { valueAsNumber: true })}
       />
-      {err && <p className="text-sm text-red-600">{(err as any).message as string}</p>}
+      {err && (
+        <p className="text-sm text-red-600">
+          {(err as any).message as string}
+        </p>
+      )}
     </div>
   );
 }
@@ -264,12 +282,48 @@ function Field({
 function SectionHousing({ form }: { form: UseFormReturn<FootprintForm> }) {
   return (
     <section className="grid gap-4 md:grid-cols-2">
-      <Field id="elec" label="Electricity (kWh/yr)" placeholder="e.g. 4000" registerPath="housing.electricity_kwh" form={form} />
-      <Field id="gas" label="Natural Gas (therms/yr)" placeholder="e.g. 200" registerPath="housing.naturalGas_therms" form={form} />
-      <Field id="fo" label="Fuel Oil (litres/yr)" placeholder="e.g. 300" registerPath="housing.fuelOil_litres" form={form} />
-      <Field id="lpg" label="LPG (litres/yr)" placeholder="e.g. 150" registerPath="housing.lpg_litres" form={form} />
-      <Field id="waste" label="Waste (kg/week)" placeholder="e.g. 5" registerPath="housing.waste_kg_per_week" form={form} />
-      <Field id="water" label="Water (litres/day)" placeholder="e.g. 120" registerPath="housing.water_litres_per_day" form={form} />
+      <Field
+        id="elec"
+        label="Electricity (kWh/yr)"
+        placeholder="e.g. 4000"
+        registerPath="housing.electricity_kwh"
+        form={form}
+      />
+      <Field
+        id="gas"
+        label="Natural Gas (therms/yr)"
+        placeholder="e.g. 200"
+        registerPath="housing.naturalGas_therms"
+        form={form}
+      />
+      <Field
+        id="fo"
+        label="Fuel Oil (litres/yr)"
+        placeholder="e.g. 300"
+        registerPath="housing.fuelOil_litres"
+        form={form}
+      />
+      <Field
+        id="lpg"
+        label="LPG (litres/yr)"
+        placeholder="e.g. 150"
+        registerPath="housing.lpg_litres"
+        form={form}
+      />
+      <Field
+        id="waste"
+        label="Waste (kg/week)"
+        placeholder="e.g. 5"
+        registerPath="housing.waste_kg_per_week"
+        form={form}
+      />
+      <Field
+        id="water"
+        label="Water (litres/day)"
+        placeholder="e.g. 120"
+        registerPath="housing.water_litres_per_day"
+        form={form}
+      />
     </section>
   );
 }
@@ -277,12 +331,48 @@ function SectionHousing({ form }: { form: UseFormReturn<FootprintForm> }) {
 function SectionTravel({ form }: { form: UseFormReturn<FootprintForm> }) {
   return (
     <section className="grid gap-4 md:grid-cols-2">
-      <Field id="veh" label="Vehicle (km/yr)" placeholder="e.g. 12000" registerPath="travel.vehicle_km" form={form} />
-      <Field id="bus" label="Bus (km/yr)" placeholder="e.g. 2000" registerPath="travel.bus_km" form={form} />
-      <Field id="metro" label="Metro (km/yr)" placeholder="e.g. 800" registerPath="travel.metro_km" form={form} />
-      <Field id="taxi" label="Taxi (km/yr)" placeholder="e.g. 300" registerPath="travel.taxi_km" form={form} />
-      <Field id="rail" label="Rail (km/yr)" placeholder="e.g. 1500" registerPath="travel.rail_km" form={form} />
-      <Field id="fly" label="Flying (km/yr)" placeholder="e.g. 2500" registerPath="travel.flying_km" form={form} />
+      <Field
+        id="veh"
+        label="Vehicle (km/yr)"
+        placeholder="e.g. 12000"
+        registerPath="travel.vehicle_km"
+        form={form}
+      />
+      <Field
+        id="bus"
+        label="Bus (km/yr)"
+        placeholder="e.g. 2000"
+        registerPath="travel.bus_km"
+        form={form}
+      />
+      <Field
+        id="metro"
+        label="Metro (km/yr)"
+        placeholder="e.g. 800"
+        registerPath="travel.metro_km"
+        form={form}
+      />
+      <Field
+        id="taxi"
+        label="Taxi (km/yr)"
+        placeholder="e.g. 300"
+        registerPath="travel.taxi_km"
+        form={form}
+      />
+      <Field
+        id="rail"
+        label="Rail (km/yr)"
+        placeholder="e.g. 1500"
+        registerPath="travel.rail_km"
+        form={form}
+      />
+      <Field
+        id="fly"
+        label="Flying (km/yr)"
+        placeholder="e.g. 2500"
+        registerPath="travel.flying_km"
+        form={form}
+      />
     </section>
   );
 }
@@ -290,15 +380,69 @@ function SectionTravel({ form }: { form: UseFormReturn<FootprintForm> }) {
 function SectionFood({ form }: { form: UseFormReturn<FootprintForm> }) {
   return (
     <section className="grid gap-4 md:grid-cols-2">
-      <Field id="red" label="Red meat (kCal/day)" placeholder="e.g. 400" registerPath="food.red_meat_kcal_per_day" form={form} />
-      <Field id="white" label="White meat (kCal/day)" placeholder="e.g. 300" registerPath="food.white_meat_kcal_per_day" form={form} />
-      <Field id="dairy" label="Dairy (kCal/day)" placeholder="e.g. 200" registerPath="food.dairy_kcal_per_day" form={form} />
-      <Field id="cereals" label="Cereals (kCal/day)" placeholder="e.g. 250" registerPath="food.cereals_kcal_per_day" form={form} />
-      <Field id="veg" label="Vegetables (kCal/day)" placeholder="e.g. 350" registerPath="food.vegetables_kcal_per_day" form={form} />
-      <Field id="fruit" label="Fruit (kCal/day)" placeholder="e.g. 200" registerPath="food.fruit_kcal_per_day" form={form} />
-      <Field id="oils" label="Oils (kCal/day)" placeholder="e.g. 100" registerPath="food.oils_kcal_per_day" form={form} />
-      <Field id="snacks" label="Snacks (kCal/day)" placeholder="e.g. 150" registerPath="food.snacks_kcal_per_day" form={form} />
-      <Field id="drinks" label="Drinks (kCal/day)" placeholder="e.g. 180" registerPath="food.drinks_kcal_per_day" form={form} />
+      <Field
+        id="red"
+        label="Red meat (kCal/day)"
+        placeholder="e.g. 400"
+        registerPath="food.red_meat_kcal_per_day"
+        form={form}
+      />
+      <Field
+        id="white"
+        label="White meat (kCal/day)"
+        placeholder="e.g. 300"
+        registerPath="food.white_meat_kcal_per_day"
+        form={form}
+      />
+      <Field
+        id="dairy"
+        label="Dairy (kCal/day)"
+        placeholder="e.g. 200"
+        registerPath="food.dairy_kcal_per_day"
+        form={form}
+      />
+      <Field
+        id="cereals"
+        label="Cereals (kCal/day)"
+        placeholder="e.g. 250"
+        registerPath="food.cereals_kcal_per_day"
+        form={form}
+      />
+      <Field
+        id="veg"
+        label="Vegetables (kCal/day)"
+        placeholder="e.g. 350"
+        registerPath="food.vegetables_kcal_per_day"
+        form={form}
+      />
+      <Field
+        id="fruit"
+        label="Fruit (kCal/day)"
+        placeholder="e.g. 200"
+        registerPath="food.fruit_kcal_per_day"
+        form={form}
+      />
+      <Field
+        id="oils"
+        label="Oils (kCal/day)"
+        placeholder="e.g. 100"
+        registerPath="food.oils_kcal_per_day"
+        form={form}
+      />
+      <Field
+        id="snacks"
+        label="Snacks (kCal/day)"
+        placeholder="e.g. 150"
+        registerPath="food.snacks_kcal_per_day"
+        form={form}
+      />
+      <Field
+        id="drinks"
+        label="Drinks (kCal/day)"
+        placeholder="e.g. 180"
+        registerPath="food.drinks_kcal_per_day"
+        form={form}
+      />
     </section>
   );
 }
@@ -306,12 +450,48 @@ function SectionFood({ form }: { form: UseFormReturn<FootprintForm> }) {
 function SectionProducts({ form }: { form: UseFormReturn<FootprintForm> }) {
   return (
     <section className="grid gap-4 md:grid-cols-2">
-      <Field id="electrical" label="Electrical ($/month)" placeholder="e.g. 100" registerPath="products.electrical_usd_per_month" form={form} />
-      <Field id="household" label="Household ($/month)" placeholder="e.g. 120" registerPath="products.household_usd_per_month" form={form} />
-      <Field id="clothes" label="Clothes ($/month)" placeholder="e.g. 80" registerPath="products.clothes_usd_per_month" form={form} />
-      <Field id="medical" label="Medical ($/month)" placeholder="e.g. 60" registerPath="products.medical_usd_per_month" form={form} />
-      <Field id="recreational" label="Recreational ($/month)" placeholder="e.g. 70" registerPath="products.recreational_usd_per_month" form={form} />
-      <Field id="other_prod" label="Other ($/month)" placeholder="e.g. 50" registerPath="products.other_usd_per_month" form={form} />
+      <Field
+        id="electrical"
+        label="Electrical ($/month)"
+        placeholder="e.g. 100"
+        registerPath="products.electrical_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="household"
+        label="Household ($/month)"
+        placeholder="e.g. 120"
+        registerPath="products.household_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="clothes"
+        label="Clothes ($/month)"
+        placeholder="e.g. 80"
+        registerPath="products.clothes_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="medical"
+        label="Medical ($/month)"
+        placeholder="e.g. 60"
+        registerPath="products.medical_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="recreational"
+        label="Recreational ($/month)"
+        placeholder="e.g. 70"
+        registerPath="products.recreational_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="other_prod"
+        label="Other ($/month)"
+        placeholder="e.g. 50"
+        registerPath="products.other_usd_per_month"
+        form={form}
+      />
     </section>
   );
 }
@@ -319,13 +499,55 @@ function SectionProducts({ form }: { form: UseFormReturn<FootprintForm> }) {
 function SectionServices({ form }: { form: UseFormReturn<FootprintForm> }) {
   return (
     <section className="grid gap-4 md:grid-cols-2">
-      <Field id="health" label="Health ($/month)" placeholder="e.g. 120" registerPath="services.health_usd_per_month" form={form} />
-      <Field id="finance" label="Finance ($/month)" placeholder="e.g. 40" registerPath="services.finance_usd_per_month" form={form} />
-      <Field id="recreation_srv" label="Recreation ($/month)" placeholder="e.g. 90" registerPath="services.recreation_usd_per_month" form={form} />
-      <Field id="education" label="Education ($/month)" placeholder="e.g. 100" registerPath="services.education_usd_per_month" form={form} />
-      <Field id="vehicle_srv" label="Vehicle ($/month)" placeholder="e.g. 150" registerPath="services.vehicle_usd_per_month" form={form} />
-      <Field id="comms" label="Communications ($/month)" placeholder="e.g. 60" registerPath="services.communications_usd_per_month" form={form} />
-      <Field id="other_srv" label="Other ($/month)" placeholder="e.g. 50" registerPath="services.other_usd_per_month" form={form} />
+      <Field
+        id="health"
+        label="Health ($/month)"
+        placeholder="e.g. 120"
+        registerPath="services.health_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="finance"
+        label="Finance ($/month)"
+        placeholder="e.g. 40"
+        registerPath="services.finance_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="recreation_srv"
+        label="Recreation ($/month)"
+        placeholder="e.g. 90"
+        registerPath="services.recreation_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="education"
+        label="Education ($/month)"
+        placeholder="e.g. 100"
+        registerPath="services.education_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="vehicle_srv"
+        label="Vehicle ($/month)"
+        placeholder="e.g. 150"
+        registerPath="services.vehicle_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="comms"
+        label="Communications ($/month)"
+        placeholder="e.g. 60"
+        registerPath="services.communications_usd_per_month"
+        form={form}
+      />
+      <Field
+        id="other_srv"
+        label="Other ($/month)"
+        placeholder="e.g. 50"
+        registerPath="services.other_usd_per_month"
+        form={form}
+      />
     </section>
   );
 }
@@ -350,13 +572,17 @@ function SectionResults({
 
   if (!serverState.result) {
     return (
-      <p className="text-sm text-muted-foreground">
-        Fill in some data to see your footprint.
-      </p>
+      <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
+        <BarChart3 className="h-12 w-12 mb-4 opacity-40" />
+        <p className="text-base font-medium">No data yet</p>
+        <p className="text-sm">
+          Fill in your household, travel, food, and other info to see your
+          footprint.
+        </p>
+      </div>
     );
   }
 
-  // apply multiplier
   const factor = householdSize || 1;
   const scaledBreakdown = Object.entries(serverState.result.breakdown).map(
     ([key, value]) => ({
@@ -369,7 +595,12 @@ function SectionResults({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold">Your carbon footprint</h3>
+      {/* Header with icon */}
+      <div className="flex items-center gap-2">
+        <BarChart3 className="h-6 w-6 text-primary" />
+        <h3 className="text-lg font-semibold">Your carbon footprint</h3>
+      </div>
+
       <div className="text-2xl font-bold">
         Total: {scaledTotal.toFixed(2)} kg CO₂e/yr
       </div>
@@ -385,7 +616,7 @@ function SectionResults({
             data={scaledBreakdown}
             dataKey="emissions"
             nameKey="category"
-            innerRadius={60}
+            innerRadius={30}
             strokeWidth={5}
             label
           >
@@ -427,4 +658,3 @@ function SectionResults({
     </div>
   );
 }
-
