@@ -46,8 +46,6 @@ export const categoryColors: Record<string, string> = {
   services: "#8b5cf6", // violet
 };
 
-const initialActionState: FootprintActionState = { result: null };
-
 export default function HomePage() {
   const [step, setStep] = useState<Step>("Housing");
   const [householdSize, setHouseholdSize] = useState(1);
@@ -61,7 +59,7 @@ export default function HomePage() {
       products: {},
       services: {},
     },
-    mode: "onChange",
+    mode: "onBlur",
   });
 
   const watched = useWatch({ control: form.control });
@@ -107,7 +105,7 @@ export default function HomePage() {
           setServerState({ error: err.message, result: null });
         }
       });
-    }, 400);
+    }, 800);
 
     return () => clearTimeout(timer);
   }, [payload]);
