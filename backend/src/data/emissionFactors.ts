@@ -29,3 +29,12 @@ export const foodEmissionFactors = {
   snacks: 0.00020,       // kg CO2e per kCal
   drinks: 0.00008        // kg CO2e per kCal
 };
+
+export const productsEmissionFactors = {
+  electrical: 0.6,    // kg CO2e per $
+  household: 0.4,     // kg CO2e per $
+  clothes: 0.8,       // kg CO2e per $
+  medical: 0.5,       // kg CO2e per $
+  recreational: 0.7,  // kg CO2e per $
+  other: 0.3          // kg CO2e per $
+};
