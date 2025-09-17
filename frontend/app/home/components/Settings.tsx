@@ -14,12 +14,12 @@ export default function Settings({
 }) {
   return (
     <Card className="w-full">
-      <CardContent className="p-6 space-y-4">
+      <CardContent className="space-y-4 p-6">
         <div className="flex items-center gap-2">
-          <UserCog className="h-5 w-5 text-muted-foreground" />
+          <UserCog className="text-muted-foreground h-5 w-5" />
           <h2 className="text-lg font-semibold">Settings</h2>
         </div>
-        <div className="grid gap-1.5 max-w-xs">
+        <div className="grid max-w-xs gap-1.5">
           <Label htmlFor="household">Number of persons in household</Label>
           <Input
             id="household"

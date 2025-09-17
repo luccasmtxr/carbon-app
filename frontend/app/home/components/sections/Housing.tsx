@@ -4,11 +4,7 @@ import Field from "../../components/Field";
 import { UseFormReturn } from "react-hook-form";
 import { FootprintForm } from "../../../schemas";
 
-export default function HousingSection({
-  form,
-}: {
-  form: UseFormReturn<FootprintForm>;
-}) {
+export default function HousingSection({ form }: { form: UseFormReturn<FootprintForm> }) {
   return (
     <section className="grid gap-4 md:grid-cols-2">
       <Field
