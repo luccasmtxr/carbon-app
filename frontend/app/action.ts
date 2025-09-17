@@ -21,7 +21,9 @@ export async function submitFootprint(
     }
     const data = JSON.parse(raw);
 
-    const res = await fetch("http://localhost:7007/api/v1/footprint", {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7007";
+
+    const res = await fetch(`${baseUrl}/api/v1/footprint`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       cache: "no-store",
@@ -33,7 +35,12 @@ export async function submitFootprint(
     }
     const json = await res.json();
     return { result: json };
-  } catch (e: any) {
-    return { result: null, error: e?.message ?? "Unknown error" };
+  } catch (err) {
+    if (err instanceof Error) {
+      return { result: null, error: err.message };
+    }
+    else{
+      return {result: null, error: "Unknow error"}
+    }
   }
 }

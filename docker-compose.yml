@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: carbon-backend
+    ports:
+      - "7007:7007"
+    environment:
+      NODE_ENV: production
+
+  frontend:
+    build: ./frontend
+    container_name: carbon-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: "http://backend:7007"
+    depends_on:
+      - backend

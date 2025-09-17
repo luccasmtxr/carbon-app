@@ -63,8 +63,14 @@ export default function HomePage() {
         );
         const result = await submitFootprint(serverState, fd);
         setServerState(result);
-      } catch (err: any) {
-        setServerState({ error: err.message, result: null });
+      } catch (err) {
+        if (err instanceof Error) {
+          setServerState({ error: err.message, result: null });
+        }
+        else {
+          setServerState({ error: "Unknow Error", result: null });
+
+        }
       }
     });
   };
