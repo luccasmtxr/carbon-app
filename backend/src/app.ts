@@ -1,6 +1,7 @@
 import express from 'express';
 import housingRoutes from './routes/housing';
 import travelRoutes from './routes/travel';
+import foodRoutes from './routes/food'
 
 export function createApp() {
   const app = express();
@@ -23,6 +24,7 @@ export function createApp() {
 
   app.use('/api/v1/housing', housingRoutes);
   app.use('/api/v1/travel', travelRoutes);
+  app.use('/api/v1/food', foodRoutes)
 
   return app;
 }

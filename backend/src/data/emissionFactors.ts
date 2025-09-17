@@ -17,3 +17,15 @@ export const travelEmissionFactors = {
   rail: 0.041,     // kg CO2e per km
   flying: 0.255    // kg CO2e per km (short/medium haul avg)
 };
+
+export const foodEmissionFactors = {
+  red_meat: 0.00027,     // kg CO2e per kCal
+  white_meat: 0.00015,   // kg CO2e per kCal
+  dairy: 0.00012,        // kg CO2e per kCal
+  cereals: 0.00005,      // kg CO2e per kCal
+  vegetables: 0.00002,   // kg CO2e per kCal
+  fruit: 0.00003,        // kg CO2e per kCal
+  oils: 0.00010,         // kg CO2e per kCal
+  snacks: 0.00020,       // kg CO2e per kCal
+  drinks: 0.00008        // kg CO2e per kCal
+};
