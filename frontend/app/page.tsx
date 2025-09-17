@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { Resolver, useForm, useWatch, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { footprintSchema, type FootprintForm } from "./schemas";
-import { useActionState } from "react";
 import { submitFootprint, type FootprintActionState } from "./action";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +31,7 @@ import {
   Utensils,
   Package,
   Cog,
+  UserCog
 } from "lucide-react";
 
 const STEPS = ["Housing", "Travel", "Food", "Products", "Services"] as const;
@@ -64,10 +64,6 @@ export default function HomePage() {
   });
 
   const watched = useWatch({ control: form.control });
-  const [serverState, formAction, pending] = useActionState(
-    submitFootprint,
-    initialActionState
-  );
 
   // build payload safely, including household size
   const payload = useMemo(() => {
@@ -92,15 +88,26 @@ export default function HomePage() {
     });
   }, [watched, householdSize]);
 
+  const [serverState, setServerState] = useState<FootprintActionState>({ result: null });
+  const [isPending, startTransition] = useTransition();
+
   // auto-calc after changes
   useEffect(() => {
     const timer = setTimeout(() => {
-      const fd = new FormData();
-      fd.append("payload", payload);
-      formAction(fd);
+      startTransition(async () => {
+        try {
+          const fd = new FormData();
+          fd.append("payload", payload);
+          const result = await submitFootprint(serverState, fd); // call server action directly
+          setServerState(result);
+        } catch (err: any) {
+          setServerState({ error: err.message, result: null });
+        }
+      });
     }, 400);
+
     return () => clearTimeout(timer);
-  }, [payload, formAction]);
+  }, [payload]);
 
   const goTo = (target: Step) => setStep(target);
 
@@ -170,7 +177,10 @@ export default function HomePage() {
             {/* Settings card */}
             <Card className="w-full">
               <CardContent className="p-6 space-y-4">
-                <h2 className="text-lg font-semibold">Settings</h2>
+                <div className="flex items-center gap-2">
+                  <UserCog className="h-5 w-5 text-muted-foreground" />
+                  <h2 className="text-lg font-semibold">Settings</h2>
+                </div>
                 <div className="grid gap-1.5 max-w-xs">
                   <Label htmlFor="household">Number of persons in household</Label>
                   <Input
@@ -188,7 +198,11 @@ export default function HomePage() {
           {/* Right column: Results */}
           <Card className="w-full h-fit md:sticky md:top-6">
             <CardContent className="p-6">
-              <SectionResults serverState={serverState} pending={pending} />
+              <SectionResults
+                serverState={serverState}
+                pending={isPending}
+                householdSize={householdSize}
+              />
             </CardContent>
           </Card>
         </div>
@@ -320,9 +334,11 @@ function SectionServices({ form }: { form: UseFormReturn<FootprintForm> }) {
 function SectionResults({
   serverState,
   pending,
+  householdSize,
 }: {
   serverState: FootprintActionState;
   pending: boolean;
+  householdSize: number;
 }) {
   if (pending) {
     return <p className="text-sm text-muted-foreground">Calculating…</p>;
@@ -340,18 +356,22 @@ function SectionResults({
     );
   }
 
-  const chartData = Object.entries(serverState.result.breakdown).map(
+  // apply multiplier
+  const factor = householdSize || 1;
+  const scaledBreakdown = Object.entries(serverState.result.breakdown).map(
     ([key, value]) => ({
       category: key,
-      emissions: value,
+      emissions: value * factor,
       fill: categoryColors[key.toLowerCase()] ?? "#6b7280",
     })
   );
+  const scaledTotal = serverState.result.total * factor;
 
   return (
     <div className="space-y-6">
+      <h3 className="text-lg font-semibold">Your carbon footprint</h3>
       <div className="text-2xl font-bold">
-        Total: {serverState.result.total.toFixed(2)} kg CO₂e/yr
+        Total: {scaledTotal.toFixed(2)} kg CO₂e/yr
       </div>
 
       {/* Chart */}
@@ -362,14 +382,14 @@ function SectionResults({
         <PieChart>
           <ChartTooltip content={<ChartTooltipContent />} />
           <Pie
-            data={chartData}
+            data={scaledBreakdown}
             dataKey="emissions"
             nameKey="category"
             innerRadius={60}
             strokeWidth={5}
             label
           >
-            {chartData.map((entry, index) => (
+            {scaledBreakdown.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.fill} />
             ))}
           </Pie>
@@ -387,7 +407,7 @@ function SectionResults({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {chartData.map((row) => (
+            {scaledBreakdown.map((row) => (
               <TableRow key={row.category}>
                 <TableCell className="capitalize flex items-center gap-2">
                   <span
@@ -407,3 +427,4 @@ function SectionResults({
     </div>
   );
 }
+
