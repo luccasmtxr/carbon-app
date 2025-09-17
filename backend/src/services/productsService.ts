@@ -10,9 +10,7 @@ export interface ProductsInput {
 }
 
 export class ProductsCalculator {
-  constructor(
-    private readonly factors = productsEmissionFactors
-  ) {}
+  constructor(private readonly factors = productsEmissionFactors) {}
 
   calculate(input: ProductsInput): number {
     let total = 0;

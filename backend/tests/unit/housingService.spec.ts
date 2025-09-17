@@ -46,8 +46,7 @@ describe('HousingCalculator', () => {
     const result = calculator.calculate(input);
 
     // expected total = sum of all above
-    const expected =
-      417 + 53 + 252 + 75.5 + (5 * 52 * 1.8) + (100 * 365 * 0.0015);
+    const expected = 417 + 53 + 252 + 75.5 + 5 * 52 * 1.8 + 100 * 365 * 0.0015;
 
     expect(result).toBeCloseTo(expected);
   });

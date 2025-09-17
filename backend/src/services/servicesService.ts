@@ -11,9 +11,7 @@ export interface ServicesInput {
 }
 
 export class ServicesCalculator {
-  constructor(
-    private readonly factors = servicesEmissionFactors
-  ) {}
+  constructor(private readonly factors = servicesEmissionFactors) {}
 
   calculate(input: ServicesInput): number {
     let total = 0;

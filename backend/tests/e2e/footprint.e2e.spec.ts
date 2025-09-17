@@ -20,13 +20,10 @@ describe('Footprint API (e2e)', () => {
       travel: { vehicle_km: 1000 },
       food: { red_meat_kcal_per_day: 500 },
       products: { clothes_usd_per_month: 100 },
-      services: { health_usd_per_month: 200 }
+      services: { health_usd_per_month: 200 },
     };
 
-    const res = await request(app)
-      .post('/api/v1/footprint')
-      .send(input)
-      .expect(200);
+    const res = await request(app).post('/api/v1/footprint').send(input).expect(200);
 
     const expectedHousing = 1000 * 0.417;
     const expectedTravel = 1000 * 0.192;
@@ -35,11 +32,7 @@ describe('Footprint API (e2e)', () => {
     const expectedServices = 200 * 12 * 0.4;
 
     const expectedTotal =
-      expectedHousing +
-      expectedTravel +
-      expectedFood +
-      expectedProducts +
-      expectedServices;
+      expectedHousing + expectedTravel + expectedFood + expectedProducts + expectedServices;
 
     expect(res.body.breakdown.housing).toBeCloseTo(expectedHousing);
     expect(res.body.breakdown.travel).toBeCloseTo(expectedTravel);
@@ -50,10 +43,7 @@ describe('Footprint API (e2e)', () => {
   });
 
   it('returns 400 for invalid input', async () => {
-    const res = await request(app)
-      .post('/api/v1/footprint')
-      .send("invalid-data")
-      .expect(400);
+    const res = await request(app).post('/api/v1/footprint').send('invalid-data').expect(400);
 
     expect(res.body.error).toBeDefined();
   });

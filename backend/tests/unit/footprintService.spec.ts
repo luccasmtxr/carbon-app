@@ -69,11 +69,7 @@ describe('FootprintCalculator', () => {
     const expectedServices = 200 * 12 * 0.4;
 
     const expectedTotal =
-      expectedHousing +
-      expectedTravel +
-      expectedFood +
-      expectedProducts +
-      expectedServices;
+      expectedHousing + expectedTravel + expectedFood + expectedProducts + expectedServices;
 
     expect(result.breakdown.housing).toBeCloseTo(expectedHousing);
     expect(result.breakdown.travel).toBeCloseTo(expectedTravel);

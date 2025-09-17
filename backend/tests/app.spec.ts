@@ -10,10 +10,7 @@ describe('App (e2e)', () => {
   });
 
   it('POST /echo should echo message', async () => {
-    const res = await request(app)
-      .post('/echo')
-      .send({ message: 'hello world' })
-      .expect(201);
+    const res = await request(app).post('/echo').send({ message: 'hello world' }).expect(201);
 
     expect(res.body).toEqual({ echoed: 'hello world' });
   });

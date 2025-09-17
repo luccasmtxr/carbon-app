@@ -10,9 +10,7 @@ export interface TravelInput {
 }
 
 export class TravelCalculator {
-  constructor(
-    private readonly factors = travelEmissionFactors
-  ) {}
+  constructor(private readonly factors = travelEmissionFactors) {}
 
   calculate(input: TravelInput): number {
     let total = 0;

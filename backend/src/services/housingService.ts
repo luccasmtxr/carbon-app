@@ -1,17 +1,17 @@
 import { housingEmissionFactors } from '../data/emissionFactors';
 
 export interface HousingInput {
-  electricity_kwh?: number;      // per year
-  naturalGas_therms?: number;    // per year
-  fuelOil_litres?: number;       // per year
-  lpg_litres?: number;           // per year
-  waste_kg_per_week?: number;    // per week
+  electricity_kwh?: number; // per year
+  naturalGas_therms?: number; // per year
+  fuelOil_litres?: number; // per year
+  lpg_litres?: number; // per year
+  waste_kg_per_week?: number; // per week
   water_litres_per_day?: number; // per day
 }
 
 export class HousingCalculator {
   constructor(
-    private readonly factors = housingEmissionFactors // default: JSON from data
+    private readonly factors = housingEmissionFactors, // default: JSON from data
   ) {}
 
   calculate(input: HousingInput): number {

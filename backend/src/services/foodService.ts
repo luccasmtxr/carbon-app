@@ -13,9 +13,7 @@ export interface FoodInput {
 }
 
 export class FoodCalculator {
-  constructor(
-    private readonly factors = foodEmissionFactors
-  ) {}
+  constructor(private readonly factors = foodEmissionFactors) {}
 
   calculate(input: FoodInput): number {
     let total = 0;

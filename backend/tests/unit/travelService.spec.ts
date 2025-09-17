@@ -45,8 +45,7 @@ describe('TravelCalculator', () => {
 
     const result = calculator.calculate(input);
 
-    const expected =
-      192 + 105 + 60 + 100 + 41 + 277.95;
+    const expected = 192 + 105 + 60 + 100 + 41 + 277.95;
 
     expect(result).toBeCloseTo(expected);
   });
